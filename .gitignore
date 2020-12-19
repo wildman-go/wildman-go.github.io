@@ -12,3 +12,5 @@ Thumbs.db
 *.lock
 
 cheatsheet.txt
+
+.jekyll-cache
