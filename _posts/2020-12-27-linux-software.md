@@ -46,6 +46,7 @@ yum包可以解决rpm包安装的依赖关系
 #### 1.yum源及国内镜像
 - yum源：http://mirror.centos.org/centos/7/
 - 国内镜像：https://opsx.alibaba.com/mirror
+
 #### 2.如何修改yum源为国内镜像
 ```
 mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup  //备份
