@@ -41,7 +41,8 @@ rpm -e apr-util
 ```
 
 ## 二.yum包管理器
-yum包可以解决rpm包安装的依赖关系
+yum包可以解决rpm包安装的依赖关系  
+
 #### 1.yum源及国内镜像
 - yum源：http://mirror.centos.org/centos/7/
 - 国内镜像：https://opsx.alibaba.com/mirror
@@ -58,6 +59,7 @@ yum remove vim //卸载
 yum list //查看已安装的包
 yum update //升级所有软件包
 ```
+
 ## 三.通过源码编译安装软件包
 - 获取压缩包
 ```
