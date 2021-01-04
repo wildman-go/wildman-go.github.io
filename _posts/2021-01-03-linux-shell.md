@@ -471,7 +471,6 @@ do
 	fi
 done
 # while循环处理位置参数
-
 while [ $# -gt 1]
 do
 	echo $#
