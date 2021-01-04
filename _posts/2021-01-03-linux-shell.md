@@ -384,4 +384,100 @@ esac
 ```
 
 ## 十五、shell脚本语法--for语句
-未完待续。。。。。。
+for 参数 in 列表<br>
+do 执行的命令<br>
+done 封闭一个循环<br>
+```shell
+for i in {1..9}
+do
+	echo “Hello”
+	echo $i
+done
+# 批量文件改名
+touch afile.txt bfile.txt cfile.txt
+for filename in `ls *.txt`
+do
+	mv $filename $(basename $filename .txt).md
+done
+```
+C语言风格的for命令<br>
+for((变量初始化;循环判断条件;变量变化))<br>
+do<br>
+&nbsp;&nbsp;&nbsp;&nbsp;循环执行的命令<br>
+done<br>
+```shell
+for (( i=1 ; i<=10 ; i++ ))
+do
+	echo $i
+done
+```
+
+## 十六、shell脚本语法--while语句
+while test测试是否成立<br>
+do<br>
+&nbsp;&nbsp;&nbsp;&nbsp;命令<br>
+done<br>
+```shell
+# while循环
+a=1
+while [ $a -lt 10 ] 
+do
+	echo $a;
+	((a++));
+done
+# 创建死循环
+while :
+do
+	echo 123
+done
+# util循环,当条件为假时，进入循环
+util [ 5 -lt 4]
+do
+	echo 123
+done 
+```
+
+## 十七、shell脚本语法--循环嵌套/break/continue
+```shell
+# 循环嵌套
+for filename in /etc/profile.d/*.sh
+do
+	echo $filename
+	if [ -x $filename ];
+	then . $filename
+	fi	
+done
+# break/continue
+for num in {1..9}
+do
+	echo $num
+	if [ $num -eq. 5 ];
+	then break;
+	fi;
+done
+```
+
+## 十八、shell脚本语法--用循环处理位置参数
+1. 命令行参数可以用`$1 $2 $3..$n`表示
+2. $0表示脚本名称
+3. `$*和$@`代表所有位置参数
+4. $# 代表位置参数的数量
+```shell
+# for循环处理位置参数
+for param in $*
+do
+	if [ “$param” = “help” ]; then
+		echo $param $param
+	fi
+done
+# while循环处理位置参数
+
+while [ $# -gt 1]
+do
+	echo $#
+	if [ “$1” = “help”]; then
+		echo $1 $1
+	fi	
+	shift #这个命令可以实现参数左移，删掉最左边一个参数
+done 
+```
