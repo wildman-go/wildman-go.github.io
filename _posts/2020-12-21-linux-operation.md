@@ -9,7 +9,7 @@ tags:
 
 ## 一、第一次启动linux
 
-#### 1、如何切换到字符终端
+### 1、如何切换到字符终端
 ```
 打开终端
 init 3
@@ -19,18 +19,18 @@ init 3
 回车
 ```
 
-#### 2、如何切换用户
+### 2、如何切换用户
 ```
 exit
 回车
 ```
 
-#### 3、有哪几个终端：
+### 3、有哪几个终端：
 1. 图形终端
 2. 命令行终端
 3. 远程终端（SSH、VNC）
 
-#### 4、Linux常用目录结构
+### 4、Linux常用目录结构
 - / 根目录
 - /root root 用户的家目录
 - /home/username 普通用户的家目录
@@ -39,13 +39,15 @@ exit
 - /sbin 管理命令目录
 - /usr/bin /usr/sbin 系统预装的其他命令
 
-#### 5、关机命令
-init 0
-回车
+### 5、关机命令
+
+	init 0
+
+	回车
 
 ## 二、Linux系统的操作
 
-#### 1、帮助命令：man/help/info
+### 1、帮助命令：man/help/info
 ```
 //man
 man ls 
@@ -62,7 +64,7 @@ type cd //查看cd命令是内部命令 or 外部命令
 info ls //info帮助 比help更详细
 ```
 
-#### 2、pwd和ls
+### 2、pwd和ls
 ```
 pwd
 
@@ -80,7 +82,7 @@ ls
  -h //以M显示文件大小
 ```
 
-#### 3、创建和删除目录
+### 3、创建和删除目录
  - mkdir
     创建已存在的文件夹，会提示文件已存在，创建失败
  ```
@@ -99,7 +101,7 @@ ls
  rm -rf /a //递归删除目录a，并且不进行提示
 ```
 
-#### 4、复制和移动目录
+### 4、复制和移动目录
  - 复制目录
  ```
  cp -r /root/a /tmp  //将目录a 复制到tmp目录下
@@ -129,7 +131,7 @@ mv /dira /tmp //将根目录下的dira目录移动到tmp目录下
  - 通配符 * 匹配任意多个字符
  - 通配符 ? 匹配1个字符
  
-#### 5、文本查看
+### 5、文本查看
  - cat
  - head
     - head -5 /demo //查看demo文件头5行内容
@@ -140,7 +142,7 @@ mv /dira /tmp //将根目录下的dira目录移动到tmp目录下
     - wc -l /demo //查看demo文件有多少行
  - more or less
  
-#### 6、打包和压缩
+### 6、打包和压缩
  - tar cf /tmp/etc-backup.tar /etc //将etc目录打包为.tar文件
  - tar czf /tmp/etc-backup.tar.gz /etc //打包并压缩
  - c：打包
@@ -149,7 +151,7 @@ mv /dira /tmp //将根目录下的dira目录移动到tmp目录下
  - tar xf /tmp/etc-backup.tar -C /root //将打包好的tar包解包到root目录下
  - tar xzf /tmp/etc-backup.tar.gz -C /root
  
-#### 7、Vim的四种模式
+### 7、Vim的四种模式
 1. 正常模式
     - i：进入插入模式
     - I：进入插入模式，光标位置在当前行的开头

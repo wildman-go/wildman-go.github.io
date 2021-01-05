@@ -8,34 +8,34 @@ tags:
 ---
 
 ## 一.软件包管理器
-#### 1.概念
+### 1.概念
  - centos、redhat使用yum包管理器，软件安装包格式为rpm
  - debian、ubuntu使用apt包管理器，软件安装包格式为deb
 
-#### 2.rpm包格式
+### 2.rpm包格式
  apr-util-1.5.2-6.el7.x86_64.rpm  
  软件名称 软件版本 系统版本 平台
-#### 3.linux中的设备文件：/dev
+### 3.linux中的设备文件：/dev
  ```
 cd /dev //进入设备目录
 mount /dev/sr0 /mnt/ //将设备/dev/sr0挂载到一个空白的目录
 cd /mnt
 cd Packages //所有rpm安装包在/mnt/Packages目录下
 ```
-#### 4.什么是挂载？
+### 4.什么是挂载？
  在windows上，把U盘插到电脑上，windows上出现u盘的盘符，就是挂载，mount
 
-#### 5.当前系统中安装了哪些包，如何查
+### 5.当前系统中安装了哪些包，如何查
 ```
 rpm -qa | more  //分屏显示所有已安装的包
 rpm -q vim-common //查看是否安装vim-common
 ```
-#### 6.如何安装rpm包
+### 6.如何安装rpm包
 先下载rpm包
 ```
 rpm -i /mnt/Packages/apr-util-1.5.2-6.el7.x86_64.rpm
 ```
-#### 7.如何卸载rpm包
+### 7.如何卸载rpm包
 ```
 rpm -e apr-util
 ```
@@ -43,17 +43,17 @@ rpm -e apr-util
 ## 二.yum包管理器
 yum包可以解决rpm包安装的依赖关系  
 
-#### 1.yum源及国内镜像
+### 1.yum源及国内镜像
 - yum源：http://mirror.centos.org/centos/7/
 - 国内镜像：https://opsx.alibaba.com/mirror
 
-#### 2.如何修改yum源为国内镜像
+### 2.如何修改yum源为国内镜像
 ```
 mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup  //备份
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 yum makecache //生成缓存
 ```
-#### 3.yum命令
+### 3.yum命令
 ```
 yum install vim-enhanced  //安装
 yum remove vim //卸载
@@ -89,16 +89,16 @@ make install
 - 后期若想卸载，可直接删除目录：/usr/local/openresty
 
 ## 四.Linux内核升级
-#### 1.查看当前内核版本
+### 1.查看当前内核版本
 ```
 uname -r
 ```
-#### 2.升级内核版本
+### 2.升级内核版本
 ```
 yum install kernel-3.10.0
 或 yum update
 ```
-#### 3.源代码编译安装内核
+### 3.源代码编译安装内核
 - 安装依赖包
 ```
 yum install gcc gcc-c++ make ncurses-devel openssl-devel elfutils-libelf-devel
