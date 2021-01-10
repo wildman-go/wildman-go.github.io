@@ -562,3 +562,153 @@ do
 	shift #这个命令可以实现参数左移，删掉最左边一个参数
 done 
 ```
+
+### 自定义函数
+```
+# 函数定义
+function fname(){
+命令
+}
+# 函数执行
+fname
+```
+```shell
+function cdls(){
+cd /var
+ls
+}
+cdls
+#取消cdls函数的定义
+unset cdls
+```
+
+函数作用范围的变量
+
+```local 变量名```
+
+函数的参数
+
+```$1 $2 $3```
+```shell
+# 定义带参数的函数
+function cdls(){
+cd $1
+ls
+}
+# 执行带参数的函数
+cdls /tmp
+# 定义
+function checkpid(){
+	# 本地化变量i
+	local i
+	for i in $* ; do
+		[ -d “/proc/$i” ] && return 0
+	done
+	# 没有进程存活，返回1
+	return 1
+}
+```
+
+如何执行定义在文件filename.sh中的函数checkpid
+
+```
+# filename.sh中定义的函数和变量在当前shell中生效
+source filename.sh
+checkpid 100
+```
+
+### 系统函数库
+1. 系统自建函数库位置
+
+/etc/init.d/functions目录下定义了常用的函数脚本文件
+
+2. 如何使用系统自建的函数脚本文件
+
+用 source 函数脚本文件 导入函数
+
+### 脚本控制
+1. 脚本优先级控制
+
+cpu占用优先级：用nice/renice调整优先级
+
+```
+# 查看当前终端系统的一些限制
+ulimit -a
+```
+
+```shell
+# 实现一个fork炸弹，死循环创建子进程,cpu占满，不响应
+func(){ func | func &}
+func
+```
+内存占用优先级：
+
+2. 捕获信号
+- kill默认发送15号信号给应用程序
+- ctrl+c发送2号信号给应用程序
+- 9号信息不可阻塞
+
+```shell
+#!/bin/bash
+# 信号演示
+# 捕获信号
+trap “echo sig 15” 15 #当接收到15号信号时，输出sig 15，忽略kill指令
+trap “echo sig 2” 2 #忽略ctrl+c
+echo $$ # 输出当前进程号
+#如果没来得及捕获或捕获完，进入死循环
+while :
+do
+	:
+done
+```
+
+### 计划任务
+1. 一次性计划任务 at
+
+```shell
+date
+at 18:31
+echo hello > hello.txt
+# 再按ctrl+D 提交任务
+# 查看计划任务
+atq
+```
+
+2. 周期性计划任务
+
+crontab命令
+
+crontab -e //配置周期性计划任务
+
+crontab -l //查看周期性计划任务
+
+crontab -e 分钟 小时 日期 月份 星期 执行的命令 
+```shell
+crontab -e #进入类似vim的编辑界面
+* * * * * /usr/bin/date >> /tmp/date.txt #每分钟运行一次
+* * * * 5 /usr/bin/date >> /tmp/date.txt #每周五运行一次
+* * * * 1,5 /usr/bin/date >> /tmp/date.txt #每周一和周五运行一次
+* * * * 1-5 /usr/bin/date >> /tmp/date.txt #每周一至周五运行一次
+```
+查看计划任务有没有执行，可以查看/var/log/cron，这里会记录几月几日几时几分几秒运行了什么任务
+
+每个用户有一个cron列表，记录在 /var/spool/cron/用户名 目录下
+
+3. 计划任务加锁 flock
+
+如果计划任务由于关机断网等因素不能按照预期时间运行，可以采用延期计划任务或给计划任务加锁
+
+anacontab 延时计划任务
+
+/etc/cron.d/0hourly
+
+/etc/anacrontab
+
+```shell
+```
+flock 锁文件
+
+不希望脚本filename.sh被重复运行，
+```
+flock -xn “/tmp/f.lock” -c “filename.sh” # 再打开一个终端，运行该脚本，将无法运行 
+```
