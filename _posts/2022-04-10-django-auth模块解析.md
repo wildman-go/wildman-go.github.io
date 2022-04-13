@@ -7,7 +7,6 @@ tags:
 - django
 ---
 
-[TOC]
 
 ## Django-Auth 模块解析
 
