@@ -2,7 +2,7 @@
 title: Django-auth模块源码解析
 date: 10-04-2022
 categories: 
-- python, django
+- python
 tags: 
 - django
 ---
