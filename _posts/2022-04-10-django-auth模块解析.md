@@ -60,6 +60,7 @@ INSTALLED_APPS = [
 11 rows in set (0.01 sec)
 ```
 #### 2.2 auth_group(用户组),一条数据表示一个用户组
+
 ```mysql
 +-------+--------------+------+-----+---------+----------------+
 | Field | Type         | Null | Key | Default | Extra          |
@@ -89,6 +90,7 @@ INSTALLED_APPS = [
 4. 看一下models.py中对两者关联关系的定义
 - User模型和group是多对多关系
 - User模型和permission(用户权限,后面会提到)也是多对多关系
+
 ```python
 
 class User(AbstractUser):
@@ -136,6 +138,7 @@ class PermissionsMixin(models.Model):
 ### 3. User模型提供的一些方法
 
 1. 如以下代码: User model中定义了一个UserManager的实例objects,UserManager中定义了一些方法,例如创建用户等等
+
 ```python
 class AbstractUser(AbstractBaseUser, PermissionsMixin):
     """...省略"""
@@ -163,6 +166,7 @@ class UserManager(BaseUserManager):
     """...省略其余方法"""
 ```
 2. 因此可以通过调用User.objects.create_user()创建用户,或者其他实用方法对用户进行各种操作
+
 ```python
 from django.contrib.auth.models import User
 user = User.objects.create_user(username="username", password="password")
@@ -180,6 +184,7 @@ user = User.objects.create_user(username="username", password="password")
     - **扩展:可以通过自定义多个不同的backends,加入backends列表,实现各种三方身份认证方式**
     - **注意: 自定义的backend,一定要确保backend.authenticate方法返回一个合法的user对象**
     - 后面会提到如何自定义backend类
+
 ```python
 # django\contrib\auth\__init__.py::authenticate方法
 @sensitive_variables('credentials')
@@ -211,7 +216,8 @@ def authenticate(request=None, **credentials):
 ```
 
 5. 如何获取认证用的backends呢?_get_backends方法干了什么?
-    - _get_backends方法实际读取了settings.AUTHENTICATION_BACKENDS    
+    - _get_backends方法实际读取了settings.AUTHENTICATION_BACKENDS  
+  
 ```python
 def _get_backends(return_tuples=False):
     backends = []
@@ -225,8 +231,8 @@ def _get_backends(return_tuples=False):
             'AUTHENTICATION_BACKENDS contain anything?'
         )
     return backends
-
 ```
+
 6. settings.AUTHENTICATION_BACKENDS是什么?
 - AUTHENTICATION_BACKENDS是定义在django settings中的一个配置项
 - django项目生成的settings.py文件中未找到AUTHENTICATION_BACKENDS字段
@@ -235,6 +241,7 @@ def _get_backends(return_tuples=False):
 - 因此可以理解为: django/contrib/auth/\_\_init\_\_.py 中的authenticate 只使用了django.contrib.auth.backends.ModelBackend这一个backend,进行了用户认证;
 - 我们可以自定义一个backend,在settings.py中覆盖AUTHENTICATION_BACKENDS的配置,将默认ModelBackend和自定义的backend都放进去
 - 让django在通过ModelBackend验证失败时,能够通过自定义backend的authenticate验证通过
+
 ```python
 # django\conf\global_settings.py
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
@@ -244,6 +251,7 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
     - 下方代码只展示了ModelBackend类中authenticate和user_can_authenticate两个方法,其他方法可翻阅源码查看
     - authenticate方法通过"用户名"和"密码",验证用户是否合法. 不合法时,返回None;合法时,返回user对象
     - ModelBackend还提供了get_user_permissions, get_group_permissions,get_group_permissions等多个方法
+
 ```python
 # django\contrib\auth\backends.py
 class ModelBackend(BaseBackend):
@@ -280,6 +288,7 @@ class ModelBackend(BaseBackend):
 - 看回 django\contrib\auth\__init__.py 中的authenticate方法
 - 可以看到在backend.authenticate返回user对象后,执行了"user.backend = backend_path"代码
 - 而经过authenticate返回的user,最终会被挂在request对象上,传给前端请求的各个view方法中
+
 ```python
 # django\contrib\auth\__init__.py
 @sensitive_variables('credentials')
@@ -308,7 +317,9 @@ def authenticate(request=None, **credentials):
     # The credentials supplied are invalid to all backends, fire signal
     user_login_failed.send(sender=__name__, credentials=_clean_credentials(credentials), request=request)
 ```
+
 - 因此在各个app的views中,我们可以通过以下方式调用backend中的例如get_user_permissions方法
+
 ```python
 # 某app/views.py
 from django.http import HttpResponse
@@ -323,6 +334,7 @@ def demo_view(request):
 
 1. 继承ModelBackend,可以继承ModelBackend自带的一些方法,例如get_user_permissions等等
 2. 继承BaseBackend时,就没有get_user_permissions等等这些方法可用了
+
 ```python
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
@@ -371,6 +383,7 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend', 'auth.ba
 
 1. 首先看下django/contrib/auth/backends.py:ModelBackend
 2. UserModel是**get_user_model**方法的返回值,看起来UserModel应该指代的是一个User Model
+
 ```python
 # 首先看下django/contrib/auth/backends.py
 UserModel = get_user_model()
@@ -388,6 +401,7 @@ class ModelBackend(BaseBackend):
 ```
 
 3. 看下**get_user_model**方法,它根据**settings.AUTH_USER_MODEl**,返回一个用户模型
+
 ```python
 # django.contrib.auth.get_user_model
 def get_user_model():
@@ -405,6 +419,7 @@ def get_user_model():
         )
 ```
 4. settings.AUTH_USER_MODEl是什么?看下**global_settings.py**,看到它指的是auth.User
+
 ```python
 # django/conf/global_settings.py:508
 AUTH_USER_MODEL = 'auth.User'
@@ -423,6 +438,7 @@ AUTH_USER_MODEL = 'auth.User'
     - 一般在使用了DRF的django项目中,都要在settings.py中对DRF进行配置
     - 比如"DEFAULT_AUTHENTICATION_CLASSES"字段,是用来设置DRF的认证类的
     - 默认包含DRF自带的两个认证类: BasicAuthentication SessionAuthentication
+
     ```python
     REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -441,6 +457,7 @@ AUTH_USER_MODEL = 'auth.User'
     - django.contrib.auth.authenticate就是**文章第4部分**开始提到的django自带的用户身份认证的方法,它通过遍历backends,验证认证是否通过
 
     - 以上概括起来:DRF默认的身份认证流程是:1)通过request.headers读取用户id和密码; 2)调用django自带的身份认证方法django.contrib.auth.authenticate; 3)认证通过,返回user,不通过则返回None
+
 ```python
 # rest_framework/authentication.py::BasicAuthentication
 class BasicAuthentication(BaseAuthentication):
@@ -545,6 +562,7 @@ class CasRestAuthentication(BaseAuthentication):
 ```
 
   - 将CasRestAuthentication配置在settings.py中
+
 ```python
 # settings.py
 
@@ -566,6 +584,7 @@ REST_FRAMEWORK = {
    - **TokenObtainPairView**的作用：根据用户名密码，生成两个token：accessToken、refreshToken
    - 此后，在其他请求的headers中带上accessToken，DRF就认为该用户认证通过
    - accessToken是有有效期的，accessToken过期后，用refreshToken请求**TokenRefreshView**生成一个新的accessToken，直到更新后的accessToken也过期了
+
 ```python
 # urls.py
 urlpatterns = [
@@ -573,6 +592,7 @@ urlpatterns = [
   url(r'api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
 ```
+
 ```python
 # settings.py
 REST_FRAMEWORK = {
@@ -588,6 +608,7 @@ REST_FRAMEWORK = {
 ```
 
 3. 重新实现TokenObtainPairView，使得通过“Cas headers”或“用户名密码”都能够拿到token对
+
 ```python
 # auth/views.py 项目中自定义的auth模块
 # 继承TokenObtainPairView
@@ -615,6 +636,7 @@ class CasTokenObtainPairView(TokenObtainPairView):
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 ```
+
 ```python
 # auth/serializer.py 项目中自定义的auth模块
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
