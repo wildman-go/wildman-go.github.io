@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 ### 2. 看一下auth app中有哪些表
 
 > django\contrib\auth\models.py
+
 #### 2.1 auth_user(用户),其中每个字段都是用户基本信息
 
 1. is_superuser: 是否是超级用户
